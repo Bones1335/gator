@@ -13,6 +13,15 @@ func main() {
 		return
 	}
 
-	fmt.Println(cfg)
+	fmt.Printf("First read of config:\nDatabase: %v\nUser: %v\n", cfg.DbURL, cfg.CurrentUser)
 
+	cfg.SetUser("alexander")
+
+	newCfg, err := config.Read()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Printf("Second read of config:\nDatabase: %v\nUser: %v\n", newCfg.DbURL, newCfg.CurrentUser)
 }
