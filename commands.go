@@ -17,11 +17,11 @@ type command struct {
 
 func handlerLogin(s *state, cmd command) error {
 	if len(cmd.arguments) == 0 {
-		return fmt.Errorf("Not enough arguments")
+		return fmt.Errorf("not enough arguments")
 	}
 
-	if s.config.SetUser(cmd.arguments[1]) == "" {
-		return fmt.Errorf("Please provide username")
+	if s.config.SetUser(cmd.arguments[1]) == nil {
+		return fmt.Errorf("please provide username")
 	}
 	s.config.SetUser(cmd.arguments[1])
 
