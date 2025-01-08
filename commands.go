@@ -15,6 +15,10 @@ type command struct {
 	arguments []string
 }
 
+type commands struct {
+	commands map[string]func(*state, command) error
+}
+
 func handlerLogin(s *state, cmd command) error {
 	if len(cmd.arguments) == 0 {
 		return fmt.Errorf("not enough arguments")
