@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/Bones1335/gator/internal/config"
 )
@@ -10,18 +11,31 @@ func main() {
 	cfg, err := config.Read()
 	if err != nil {
 		fmt.Println(err)
-		return
+		os.Exit(1)
 	}
 
-	fmt.Printf("First read of config:\nDatabase: %v\nUser: %v\n", cfg.DbURL, cfg.CurrentUser)
+	st := state{config: &cfg}
 
-	cfg.SetUser("alexander")
+	cmds := commands{
+		handlers: make(map[string]func(*state, command) error),
+	}
 
-	newCfg, err := config.Read()
-	if err != nil {
+	cmds.register("login", handlerLogin)
+
+	args := os.Args
+	if len(args) < 2 {
+		fmt.Println("not enough arguments")
+		os.Exit(1)
+	}
+
+	commandName := args[1]
+	commandArgs := args[2:]
+	cmd := command{name: commandName, arguments: commandArgs}
+
+	if err := cmds.run(&st, cmd); err != nil {
 		fmt.Println(err)
-		return
+		os.Exit(1)
 	}
 
-	fmt.Printf("Second read of config:\nDatabase: %v\nUser: %v\n", newCfg.DbURL, newCfg.CurrentUser)
+	os.Exit(0)
 }
