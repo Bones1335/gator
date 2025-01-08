@@ -19,6 +19,18 @@ type commands struct {
 	commands map[string]func(*state, command) error
 }
 
+func (c *commands) register(name string, f func(*state, command) error) {
+	c.commands[name] = f
+}
+
+func (c *commands) run(s *state, cmd command) error {
+	if f, exists := c.commands[cmd.name]; exists == true {
+		return f(s, cmd)
+	} 
+	return fmt.Errorf("command %v not found", cmd.name)
+
+}
+
 func handlerLogin(s *state, cmd command) error {
 	if len(cmd.arguments) == 0 {
 		return fmt.Errorf("not enough arguments")
