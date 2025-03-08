@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/Bones1335/gator/internal/database"
+	"github.com/google/uuid"
 )
 
 func handlerAddFeed(s *state, cmd command) error {
@@ -25,6 +27,21 @@ func handlerAddFeed(s *state, cmd command) error {
 		return fmt.Errorf("error adding feed to database: %w", err)
 	}
 
+	feedFollow, err := s.database.CreateFeedFollow(context.Background(), database.CreateFeedFollowParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
+		UserID:    currentUser.ID,
+		FeedID:    feed.ID,
+	})
+	if err != nil {
+		return fmt.Errorf("couldn't create feed follow: %w", err)
+	}
+
+	fmt.Println("Feed created successfully:")
+
+	fmt.Println("Feed followed successfully:")
+	printFeedFollow(feedFollow.UserName, feedFollow.FeedName)
 	fmt.Printf("New feed record: %v\n", feed)
 	return nil
 }
