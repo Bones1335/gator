@@ -9,19 +9,14 @@ import (
 	"github.com/google/uuid"
 )
 
-func handlerAddFeed(s *state, cmd command) error {
-	currentUser, err := s.database.GetUser(context.Background(), s.config.CurrentUser)
-	if err != nil {
-		return fmt.Errorf("couldn't parse uuid: %v", err)
-	}
-
+func handlerAddFeed(s *state, cmd command, user database.User) error {
 	if len(cmd.arguments) < 2 {
 		return fmt.Errorf("not enough arguments")
 	}
 	feed, err := s.database.CreateFeed(context.Background(), database.CreateFeedParams{
 		Name:   cmd.arguments[0],
 		Url:    cmd.arguments[1],
-		UserID: currentUser.ID,
+		UserID: user.ID,
 	})
 	if err != nil {
 		return fmt.Errorf("error adding feed to database: %w", err)
@@ -31,7 +26,7 @@ func handlerAddFeed(s *state, cmd command) error {
 		ID:        uuid.New(),
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
-		UserID:    currentUser.ID,
+		UserID:    user.ID,
 		FeedID:    feed.ID,
 	})
 	if err != nil {
