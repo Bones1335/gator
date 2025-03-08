@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/Bones1335/gator/internal/config"
@@ -24,7 +25,7 @@ func main() {
 
 	db, err := sql.Open("postgres", cfg.DbURL)
 	if err != nil {
-		os.Exit(1)
+		log.Fatalf("error connecting to db: %v", err)
 	}
 	defer db.Close()
 
@@ -41,6 +42,7 @@ func main() {
 
 	cmds.register("login", handlerLogin)
 	cmds.register("register", handlerRegister)
+	cmds.register("reset", handlerReset)
 
 	args := os.Args
 	if len(args) < 2 {
