@@ -56,6 +56,7 @@ func handlerGetFeeds(s *state, cmd command) error {
 		fmt.Printf("Name: %v\n", feed.Name)
 		fmt.Printf("Url: %v\n", feed.Url)
 		fmt.Printf("User: %v\n", name)
+		fmt.Printf("LastFetchedAt: %v\n", feed.LastFetchedAt)
 	}
 
 	return nil
